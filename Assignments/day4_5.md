@@ -1,4 +1,5 @@
-### Day 4
+## Day 4
+### Problem 1
 #### Exercise 1
 ##### Write the form of the covariance matrix for a 3-variable system. What is the dimension of the covariance matrix?
 
@@ -15,3 +16,24 @@ Yes
 ##### Read through the numpy documentation for the corrcoef function and implement your own version on the problem you just completed.
 Done
 
+### Problem 2
+#### Part A
+##### Using matplotlib (or plotting library of your choice), generate a few plots of the data.
+Done
+
+#### Part B
+##### Compute the covariance and correlation coefficient matrices for the following
+Done
+
+#### Part C
+
+
+#### Part D
+
+
+## Day 5
+### Problem 1
+#### Exercise 1
+Done. Attached is the work
+
+#### Exercise 2

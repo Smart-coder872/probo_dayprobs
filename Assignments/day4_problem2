@@ -1,0 +1,217 @@
+import numpy as np
+from numpy import cov, corrcoef
+import pandas as pd
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+
+if __name__ == "__main__":
+  # read in the data from the two files
+  imu_df = pd.read_csv("imu1.csv")  # replace filepath with yours
+  vicon_df = pd.read_csv("vi1.csv")  # replace filepath with yours
+
+  time = imu_df["Time"].to_numpy()[1:]
+  fig, ((ax1, ax2), (ax3, ax4), (ax5, ax6), (ax7, ax8)) = plt.subplots(4, 2, figsize=(15, 12))
+  
+  imu_roll = imu_df["attitude_roll_radians"].to_numpy()[1:]
+  imu_pitch = imu_df["attitude_pitch_radians"].to_numpy()[1:]
+  imu_yaw = imu_df["attitude_yaw_radians"].to_numpy()[1:]
+  vicon_roll = vicon_df["roll"].to_numpy()[1:]
+  vicon_pitch = vicon_df["pitch"].to_numpy()[1:]
+  vicon_yaw = vicon_df["yaw"].to_numpy()[1:]
+  mag_field_x = imu_df["magnetic_field_x_microteslas"].to_numpy()[1:]
+  mag_field_y = imu_df["magnetic_field_y_microteslas"].to_numpy()[1:]
+  mag_field_z = imu_df["magnetic_field_z_microteslas"].to_numpy()[1:]
+  gravity_x = imu_df["gravity_x_G"].to_numpy()[1:]
+  gravity_y = imu_df["gravity_y_G"].to_numpy()[1:]
+  gravity_z = imu_df["gravity_z_G"].to_numpy()[1:]
+  rotation_x = imu_df["rotation_rate_x_rad_per_sec"].to_numpy()[1:]
+  rotation_y = imu_df["rotation_rate_y_rad_per_sec"].to_numpy()[1:]
+  rotation_z = imu_df["rotation_rate_z_rad_per_s"].to_numpy()[1:]
+  acceleration_x = imu_df["user_acc_x_G"].to_numpy()[1:]
+  acceleration_y = imu_df["user_acc_y_G"].to_numpy()[1:]
+  acceleration_z = imu_df["user_acc_z_G"].to_numpy()[1:]
+
+  print(acceleration_z)
+
+  #imu_attitude over time------------------------------------------------------------------------------------
+  ax1.plot(time, imu_roll, color='green', label='roll over time', markeredgewidth=2)
+  ax1.plot(time, imu_pitch, color='blue', label='pitch over time', markeredgewidth=2)
+  ax1.plot(time, imu_yaw, color='red', label='yaw over time', markeredgewidth=2)
+
+  ax1.set_title("IMU Attitute (radians)")
+  ax1.set_xlabel("Time")
+ 
+  #vicon_altitude over time------------------------------------------------------------------------
+  ax2.plot(time, vicon_roll, color='#E63600', label='vicon altitude', markeredgewidth=2)
+  ax2.plot(time, vicon_pitch, color='black', label='vicon altitude', markeredgewidth=2)
+  ax2.plot(time, vicon_yaw, color='#4C00FF', label='vicon altitude', markeredgewidth=2)
+
+  ax2.set_title("Vicon Attitude (radians)")
+  ax2.set_xlabel("Time")
+  
+  #imu magnetic field over time----------------------------------------------------------------------
+  ax3.plot(time, mag_field_x, color='magenta', label='mag x over time', markeredgewidth=2)
+  ax3.plot(time, mag_field_y, color='yellow', label='mag y over time', markeredgewidth=2)
+  ax3.plot(time, mag_field_z, color='cyan', label='mag z over time', markeredgewidth=2)
+
+  ax3.set_title("IMU Magnetic Field (Microteslas)")
+  ax3.set_xlabel("Time")
+  
+  #imu gravity over time-----------------------------------------------------------------------------------
+  ax4.plot(time, gravity_x, color='#5100FA', label='grav x over time', markeredgewidth=2)
+  ax4.plot(time, gravity_y, color='#E67500', label='grav y over time', markeredgewidth=2)
+  ax4.plot(time, gravity_z, color='#0092E6', label='grav z over time', markeredgewidth=2)
+
+  ax4.set_title("IMU Gravity (G)")
+  ax4.set_xlabel("Time") 
+  
+  #rotation rate over time-----------------------------------------------------------------------
+  ax5.plot(time, rotation_x, color='#127500', label='rot x over time', markeredgewidth=2)
+  ax5.plot(time, rotation_y, color='#754600', label='rot y over time', markeredgewidth=2)
+  ax5.plot(time, rotation_z, color='#0044A3', label='rot z over time', markeredgewidth=2)
+
+  ax5.set_title("IMU Rotation Rate (rad/sec^2)")
+  ax5.set_xlabel("Time")
+  #vicon vs imu pitch-----------------------------------------------------
+  ax6.plot(time, imu_pitch, color='#00E6B0', label='imu pitch', markeredgewidth=2)
+  ax6.plot(time, vicon_pitch, color='#B8E600', label='vicon pitch', markeredgewidth=2)
+
+  ax6.set_title("Vicon vs IMU Pitch (radians/sec)")
+  ax6.set_xlabel("Time")
+  
+  #vicon vs imu yaw-----------------------------------------------------
+  ax7.plot(time, imu_yaw, color='#787878', label='imu yaw', markeredgewidth=2)
+  ax7.plot(time, vicon_yaw, color='#4C00FF', label='vicon yaw', markeredgewidth=2)
+
+  ax7.set_title("Vicon vs IMU Yaw (radians/sec)")
+  ax7.set_xlabel("Time")
+  
+  #vicon vs imu roll-----------------------------------------------------
+  ax8.plot(time, imu_roll, color='#A38C8C', label='imu roll', markeredgewidth=2)
+  ax8.plot(time, vicon_roll, color='#8CA394', label='vicon roll', markeredgewidth=2)
+
+  ax8.set_title("Vicon vs IMU Roll (radians/sec)")
+  ax8.set_xlabel("Time")
+
+  fig.legend()
+  plt.tight_layout(pad=3.0)
+  plt.show()
+ 
+ 
+  #Excercise B
+  cov_accel = cov(np.stack([acceleration_x, acceleration_y, acceleration_z]))
+  coeff_accel = corrcoef(np.stack([acceleration_x, acceleration_y, acceleration_z]))
+  
+# IMU Attitude (3x3)
+  cov_imu_att = np.cov(np.stack([imu_roll, imu_pitch, imu_yaw]))
+  coeff_imu_att = np.corrcoef(np.stack([imu_roll, imu_pitch, imu_yaw]))
+
+# Rotation (3x3)  
+  cov_rotation = np.cov(np.stack([rotation_x, rotation_y, rotation_z]))
+  coeff_rotation = np.corrcoef(np.stack([rotation_x, rotation_y, rotation_z]))
+
+# Grav+Mag+Acc (3x3 each axis)
+  cov_grav_mag_acc_x = np.cov(np.stack([gravity_x, mag_field_x, acceleration_x]))
+  coeff_grav_mag_acc_x = np.corrcoef(np.stack([gravity_x, mag_field_x, acceleration_x]))
+  cov_grav_mag_acc_y = np.cov(np.stack([gravity_y, mag_field_y, acceleration_y]))
+  coeff_grav_mag_acc_y = np.corrcoef(np.stack([gravity_y, mag_field_y, acceleration_y]))
+  cov_grav_mag_acc_z = np.cov(np.stack([gravity_z, mag_field_z, acceleration_z]))
+  coeff_grav_mag_acc_z = np.corrcoef(np.stack([gravity_z, mag_field_z, acceleration_z]))
+
+# Rot+Acc (2x2 each axis)
+  cov_rot_acc_x = np.cov(np.stack([rotation_x, acceleration_x]))
+  coeff_rot_acc_x = np.corrcoef(np.stack([rotation_x, acceleration_x]))
+  cov_rot_acc_y = np.cov(np.stack([rotation_y, acceleration_y]))
+  coeff_rot_acc_y = np.corrcoef(np.stack([rotation_y, acceleration_y]))
+  cov_rot_acc_z = np.cov(np.stack([rotation_z, acceleration_z]))
+  coeff_rot_acc_z = np.corrcoef(np.stack([rotation_z, acceleration_z]))
+
+
+  fig, axes = plt.subplots(9, 2, figsize=(18, 28))  #  9 rows, 2 cols
+
+  #X Y and Z acceleration
+  sns.heatmap(cov_accel, annot=True, fmt='.3f', cmap='coolwarm', 
+              xticklabels=['acc_x', 'acc_y', 'acc_z'], yticklabels=['acc_x', 'acc_y', 'acc_z'], ax=axes[0,0])
+  axes[0,0].set_title('Cov Acceleration Matrix')
+
+  sns.heatmap(coeff_accel, annot=True, fmt='.3f', cmap='coolwarm', 
+              xticklabels=['acc_x', 'acc_y', 'acc_z'], yticklabels=['acc_x', 'acc_y', 'acc_z'], ax=axes[0,1])
+  axes[0,1].set_title('Coeff Acceleration Matrix')
+
+  # IMU Attitude
+  sns.heatmap(cov_imu_att, annot=True, fmt='.3f', cmap='coolwarm', 
+              xticklabels=['roll','pitch','yaw'], yticklabels=['roll','pitch','yaw'], ax=axes[1,0])
+  axes[1,0].set_title('Cov IMU Attitude')
+
+  sns.heatmap(coeff_imu_att, annot=True, fmt='.3f', cmap='coolwarm', 
+              xticklabels=['roll','pitch','yaw'], yticklabels=['roll','pitch','yaw'], ax=axes[1,1])
+  axes[1,1].set_title('Coeff IMU Attitude')
+
+  # Rotation
+  sns.heatmap(cov_rotation, annot=True, fmt='.3f', cmap='coolwarm', 
+              xticklabels=['rot_x','rot_y','rot_z'], yticklabels=['rot_x','rot_y','rot_z'], ax=axes[2,0])
+  axes[2,0].set_title('Cov Rotation')
+
+  sns.heatmap(coeff_rotation, annot=True, fmt='.3f', cmap='coolwarm', 
+              xticklabels=['rot_x','rot_y','rot_z'], yticklabels=['rot_x','rot_y','rot_z'], ax=axes[2,1])
+  axes[2,1].set_title('Coeff Rotation')
+
+  # Grav+Mag+Acc X
+  sns.heatmap(cov_grav_mag_acc_x, annot=True, fmt='.3f', cmap='coolwarm', 
+              xticklabels=['grav','mag','acc'], yticklabels=['grav','mag','acc'], ax=axes[3,0])
+  axes[3,0].set_title('Cov Grav+Mag+Acc X')
+
+  sns.heatmap(coeff_grav_mag_acc_x, annot=True, fmt='.3f', cmap='coolwarm', 
+              xticklabels=['grav','mag','acc'], yticklabels=['grav','mag','acc'], ax=axes[3,1])
+  axes[3,1].set_title('Coeff Grav+Mag+Acc X')
+
+  # Grav+Mag+Acc Y
+  sns.heatmap(cov_grav_mag_acc_y, annot=True, fmt='.3f', cmap='coolwarm', 
+              xticklabels=['grav','mag','acc'], yticklabels=['grav','mag','acc'], ax=axes[4,0])
+  axes[4,0].set_title('Cov Grav+Mag+Acc Y')
+
+  sns.heatmap(coeff_grav_mag_acc_y, annot=True, fmt='.3f', cmap='coolwarm', 
+              xticklabels=['grav','mag','acc'], yticklabels=['grav','mag','acc'], ax=axes[4,1])
+  axes[4,1].set_title('Coeff Grav+Mag+Acc Y')
+
+  # Grav+Mag+Acc Z
+  sns.heatmap(cov_grav_mag_acc_z, annot=True, fmt='.3f', cmap='coolwarm', 
+              xticklabels=['grav','mag','acc'], yticklabels=['grav','mag','acc'], ax=axes[5,0])
+  axes[5,0].set_title('Cov Grav+Mag+Acc Z')
+
+  sns.heatmap(coeff_grav_mag_acc_z, annot=True, fmt='.3f', cmap='coolwarm', 
+              xticklabels=['grav','mag','acc'], yticklabels=['grav','mag','acc'], ax=axes[5,1])
+  axes[5,1].set_title('Coeff Grav+Mag+Acc Z')
+
+  # Rot+Acc X
+  sns.heatmap(cov_rot_acc_x, annot=True, fmt='.3f', cmap='coolwarm', 
+              xticklabels=['rot','acc'], yticklabels=['rot','acc'], ax=axes[6,0])
+  axes[6,0].set_title('Cov Rot+Acc X')
+
+  sns.heatmap(coeff_rot_acc_x, annot=True, fmt='.3f', cmap='coolwarm', 
+              xticklabels=['rot','acc'], yticklabels=['rot','acc'], ax=axes[6,1])
+  axes[6,1].set_title('Coeff Rot+Acc X')
+
+  # Rot+Acc Y
+  sns.heatmap(cov_rot_acc_y, annot=True, fmt='.3f', cmap='coolwarm', 
+              xticklabels=['rot','acc'], yticklabels=['rot','acc'], ax=axes[7,0])
+  axes[7,0].set_title('Cov Rot+Acc Y')
+
+  sns.heatmap(coeff_rot_acc_y, annot=True, fmt='.3f', cmap='coolwarm', 
+              xticklabels=['rot','acc'], yticklabels=['rot','acc'], ax=axes[7,1])
+  axes[7,1].set_title('Coeff Rot+Acc Y')
+
+  # Rot+Acc Z
+  sns.heatmap(cov_rot_acc_z, annot=True, fmt='.3f', cmap='coolwarm', 
+              xticklabels=['rot','acc'], yticklabels=['rot','acc'], ax=axes[8,0])
+  axes[8,0].set_title('Cov Rot+Acc Z')
+
+  sns.heatmap(coeff_rot_acc_z, annot=True, fmt='.3f', cmap='coolwarm', 
+              xticklabels=['rot','acc'], yticklabels=['rot','acc'], ax=axes[8,1])
+  axes[8,1].set_title('Coeff Rot+Acc Z')
+
+
+  plt.tight_layout(pad=3.5) #prevents overlapping labels
+  plt.show()
