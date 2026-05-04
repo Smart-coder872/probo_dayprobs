@@ -4,8 +4,11 @@
 ##### Write the form of the covariance matrix for a 3-variable system. What is the dimension of the covariance matrix?
 
 A 3 variable matrix would be a 3x3 like this:
+
 [Cov(X, X) Cov(X, Y) Cov(X, Z)
+
 Cov(Y, X) Cov(Y, Y) Cov(Y, Z)
+
 Cov(Z, X) Cov(Z, Y) Cov(Z, Z)]
 
 #### Excercise 2
@@ -37,3 +40,14 @@ Done
 Done. Attached is the work
 
 #### Exercise 2
+##### Version 1
+At k=1, the distrubution is room 1: 0, room 2: 0.5, and room 3: 0.5.
+
+At k=2, the distrubution is room 1: 0, room 2: 0.55, and room 3: 0.45.
+
+The further the timestep, the less even the distrubution becomes.
+
+##### Version 2
+
+
+

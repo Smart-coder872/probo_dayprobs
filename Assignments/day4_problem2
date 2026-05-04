@@ -33,7 +33,12 @@ if __name__ == "__main__":
   acceleration_y = imu_df["user_acc_y_G"].to_numpy()[1:]
   acceleration_z = imu_df["user_acc_z_G"].to_numpy()[1:]
 
-  print(acceleration_z)
+  v_rotation_x = vicon_df["rotation_x"].to_numpy()[1:]
+  v_rotation_y = vicon_df["rotation_y"].to_numpy()[1:]
+  v_rotation_z = vicon_df["rotation_z"].to_numpy()[1:]
+  v_pitch = vicon_df["pitch"].to_numpy()[1:]
+  v_roll = vicon_df["roll"].to_numpy()[1:]
+  v_yaw = vicon_df["yaw"].to_numpy()[1:]
 
   #imu_attitude over time------------------------------------------------------------------------------------
   ax1.plot(time, imu_roll, color='green', label='roll over time', markeredgewidth=2)
@@ -212,6 +217,51 @@ if __name__ == "__main__":
               xticklabels=['rot','acc'], yticklabels=['rot','acc'], ax=axes[8,1])
   axes[8,1].set_title('Coeff Rot+Acc Z')
 
+
+  plt.tight_layout(pad=3.5) #prevents overlapping labels
+  plt.show()
+
+  #vicon - imu residual
+  res_rotation_x = v_rotation_x - rotation_x
+  res_rotation_y = v_rotation_y - rotation_y
+  res_rotation_z = v_rotation_z - rotation_z
+  res_pitch = v_pitch - imu_pitch
+  res_roll = v_roll - imu_roll
+  res_yaw = v_yaw - imu_yaw
+
+  
+  residuals = [res_rotation_x, res_rotation_y, res_rotation_z, res_pitch, res_roll, res_yaw]
+  means, variances = [], []
+  for res in residuals:
+    mean = f"mean: {np.mean(res)}"
+    means.append(mean)
+
+    variance = f"variance: {np.cov(np.stack([res]))}"
+    variances.append(variance)
+  
+  print('\n'.join(means))
+  print('\n'.join(variances))
+
+
+  fig, ((ax1, ax2, ax3), (ax4, ax5, ax6)) = plt.subplots(2, 3, figsize=(15, 12))
+
+  ax1.plot(time, res_rotation_x, color='green', label='res rot x over time', markeredgewidth=2)
+  ax1.set_title("Residual rotation x")
+
+  ax2.plot(time, res_rotation_y, color='blue', label='res rot y over time', markeredgewidth=2)
+  ax2.set_title("Residual rotation y")
+  
+  ax3.plot(time, res_rotation_z, color='red', label='res rot z over time', markeredgewidth=2)
+  ax3.set_title("Residual rotation z")
+
+  ax4.plot(time, res_pitch, color='magenta', label='res pitch over time', markeredgewidth=2)
+  ax4.set_title("Residual pitch")
+  
+  ax5.plot(time, res_roll, color='yellow', label='res roll over time', markeredgewidth=2)
+  ax5.set_title("Residual roll")
+
+  ax6.plot(time, res_yaw, color='cyan', label='res yaw over time', markeredgewidth=2)
+  ax6.set_title("Residual yaw")
 
   plt.tight_layout(pad=3.5) #prevents overlapping labels
   plt.show()
