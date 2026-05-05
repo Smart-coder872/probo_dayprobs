@@ -38,7 +38,7 @@ It was suprising that some of the coeff and covariance variables were drasticall
 ### Problem 1
 #### Exercise 1
 Done. Attached is the work
-![Work](Day 5 Work.jpeg)
+![Work](https://github.com/Smart-coder872/probo_dayprobs/blob/main/Assignments/Day%205%20Work.jpeg)
 
 #### Exercise 2
 ##### Version 1
