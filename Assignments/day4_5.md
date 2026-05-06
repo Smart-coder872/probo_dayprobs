@@ -54,7 +54,7 @@ With filtering, the robot is likely to go: {Room 1, Room 3, Room 3, Room 2, Room
 With smoothing, the robot is likely to go: {Room 1, Room 3, Room 2, Room 2, Room 3}.
 
 
-### Problem 2
+### Problem 3
 #### Part A
 
 #### Part B
